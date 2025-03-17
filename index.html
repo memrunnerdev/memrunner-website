@@ -126,6 +126,7 @@
             background: transparent;
             animation: float 3s ease-in-out infinite;
             cursor: pointer;
+            position: relative;
         }
 
         .logo-container:hover {
@@ -505,6 +506,99 @@
                 border: 2px solid var(--accent-pink);
             }
         }
+
+        .speech-bubble {
+            position: absolute;
+            background: white;
+            border: 2px solid var(--text-gray);
+            border-radius: 15px;
+            padding: 10px 15px;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            transform-origin: bottom;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                        opacity 0.5s ease;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            min-width: 60px;
+            animation: rainbow-bg 5s linear infinite;
+            opacity: 0;
+            visibility: visible;
+            pointer-events: none;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid var(--text-gray);
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid white;
+            z-index: 1;
+        }
+
+        .speech-bubble.show {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        .speech-bubble span {
+            font-family: 'Comic Neue', cursive;
+            font-size: 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .speech-bubble span.rainbow-letter {
+            animation: letter-rainbow 2s infinite;
+        }
+
+        .hover-text {
+            position: absolute;
+            left: 120%;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-family: 'Comic Neue', cursive;
+            font-size: clamp(16px, 2vw, 20px);
+            font-weight: bold;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .hover-text.left-side {
+            left: auto;
+            right: 120%;
+        }
+
+        .hover-text span {
+            display: inline-block;
+            animation: letter-rainbow 2s infinite;
+        }
+
+        .logo-container:hover .hover-text {
+            transform: translateY(-50%) scale(1);
+            opacity: 1;
+        }
     </style>
 </head>
 <!-- Deploy timestamp: 2024-03-16 -->
@@ -512,6 +606,7 @@
     <div class="page-container">
         <div class="logo-container">
             <img src="logo.png" alt="LOLifant Logo" class="logo">
+            <div class="hover-text"></div>
         </div>
         <div class="title-container">
             <h1 class="rainbow-text"></h1>
@@ -760,9 +855,95 @@
             });
         }
 
+        function setupLogoInteractions() {
+            // Make logo interactive
+            const logo = document.querySelector('.logo-container');
+            
+            // Create hover text with rainbow letters
+            const hoverText = logo.querySelector('.hover-text');
+            const hoverMessage = 'Click me LOL';
+            let isTextOnLeft = false;
+            let bubbleScale = 1;
+            
+            hoverMessage.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.style.animationDelay = `${index * 0.1}s`;
+                hoverText.appendChild(span);
+            });
+
+            // Toggle text position immediately on hover and unhover
+            logo.addEventListener('mouseenter', () => {
+                hoverText.classList.toggle('left-side', isTextOnLeft);
+            });
+
+            logo.addEventListener('mouseleave', () => {
+                isTextOnLeft = !isTextOnLeft;
+                hoverText.classList.remove('show');
+            });
+            
+            // Create speech bubble
+            const speechBubble = document.createElement('div');
+            speechBubble.className = 'speech-bubble';
+            const lolText = 'LOL!';
+            let clickTimeout;
+            
+            // Create rainbow letters for LOL!
+            lolText.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.className = 'rainbow-letter';
+                span.style.animationDelay = `${index * 0.1}s`;
+                speechBubble.appendChild(span);
+            });
+            
+            logo.appendChild(speechBubble);
+            
+            logo.addEventListener('click', function() {
+                // Clear any existing timeout
+                if (clickTimeout) {
+                    clearTimeout(clickTimeout);
+                }
+                
+                // Pop animation for the logo
+                this.style.animation = 'none';
+                this.offsetHeight; // Trigger reflow
+                this.style.animation = 'pop 0.5s ease';
+                
+                // Increment bubble scale
+                bubbleScale *= 1.01;
+                
+                // Reset any ongoing transitions
+                speechBubble.style.transition = 'none';
+                speechBubble.offsetHeight; // Force reflow
+                speechBubble.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease';
+                
+                // Show speech bubble with current scale
+                speechBubble.style.transform = `translateX(-50%) scale(${bubbleScale})`;
+                speechBubble.style.opacity = '1';
+                speechBubble.classList.add('show');
+                
+                // Hide speech bubble after 1 second
+                clickTimeout = setTimeout(() => {
+                    speechBubble.style.opacity = '0';
+                    speechBubble.style.transform = `translateX(-50%) scale(${bubbleScale * 0.8})`;
+                    
+                    // Reset for next appearance after fade completes
+                    setTimeout(() => {
+                        speechBubble.classList.remove('show');
+                        speechBubble.style.transform = 'translateX(-50%) scale(0)';
+                    }, 500);
+                    
+                    // Return to floating animation
+                    this.style.animation = 'float 3s ease-in-out infinite';
+                }, 1000);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             setupRainbowText();
             setupFloatingLOLs();
+            setupLogoInteractions();
         });
 
         const colors = [
@@ -822,17 +1003,6 @@
 
             setTimeout(() => {
                 document.body.removeChild(clickEffect);
-            }, 500);
-        });
-
-        // Make logo interactive
-        const logo = document.querySelector('.logo-container');
-        logo.addEventListener('click', function() {
-            this.style.animation = 'none';
-            this.offsetHeight; // Trigger reflow
-            this.style.animation = 'pop 0.5s ease';
-            setTimeout(() => {
-                this.style.animation = 'float 3s ease-in-out infinite';
             }, 500);
         });
     </script>
