@@ -40,36 +40,55 @@
         </div>
     </div>
 
-    <!-- Audio element - not autoplaying by default -->
-    <audio id="backgroundAudio" loop>
-        <source src="sonic-theme.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <!-- Hidden YouTube iframe for audio -->
+    <div id="youtubePlayer" style="position: absolute; left: -9999px; top: -9999px;">
+        <iframe id="ytplayer" width="1" height="1" src="https://www.youtube.com/embed/eFZCYrTT9PA?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const backgroundAudio = document.getElementById('backgroundAudio');
             const audioToggle = document.getElementById('audioToggle');
+            let player;
+            let isPlaying = false;
             
-            // Set initial volume
-            backgroundAudio.volume = 0.7;
+            // YouTube API
+            window.onYouTubeIframeAPIReady = function() {
+                player = new YT.Player('ytplayer', {
+                    events: {
+                        'onReady': onPlayerReady
+                    }
+                });
+            }
             
-            // Audio is muted by default
-            backgroundAudio.muted = true;
+            function onPlayerReady(event) {
+                // Player is ready
+                player.setVolume(70); // Set volume to 70%
+            }
             
-            // Audio toggle functionality - off by default, turns on when clicked
+            // Load YouTube API
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            
+            // Audio toggle functionality
             audioToggle.addEventListener('click', function() {
                 const icon = audioToggle.querySelector('i');
                 
-                if (icon.classList.contains('fa-volume-mute')) {
-                    // Unmute and play the audio
-                    backgroundAudio.muted = false;
-                    backgroundAudio.play();
+                if (!isPlaying) {
+                    // Play music
+                    if (player && player.playVideo) {
+                        player.playVideo();
+                    }
+                    isPlaying = true;
                     icon.classList.remove('fa-volume-mute');
                     icon.classList.add('fa-volume-up');
                 } else {
-                    // Pause the audio
-                    backgroundAudio.pause();
+                    // Pause music
+                    if (player && player.pauseVideo) {
+                        player.pauseVideo();
+                    }
+                    isPlaying = false;
                     icon.classList.remove('fa-volume-up');
                     icon.classList.add('fa-volume-mute');
                 }
