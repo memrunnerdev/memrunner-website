@@ -146,6 +146,30 @@ html, body {
     filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.15));
 }
 
+.logo {
+    position: absolute;
+    right: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 35%;
+    max-height: 75vh;
+    object-fit: contain;
+    filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.15));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(-50%);
+    }
+    50% {
+        transform: translateY(-45%);
+    }
+    100% {
+        transform: translateY(-50%);
+    }
+}
+
 .hero-buttons {
     display: flex;
     gap: 1rem;
@@ -211,7 +235,7 @@ html, body {
         font-size: 5rem;
     }
     
-    .hero-mascot {
+    .hero-mascot, .logo {
         max-width: 38%;
     }
 }
@@ -225,7 +249,7 @@ html, body {
         font-size: 1.1rem;
     }
     
-    .hero-mascot {
+    .hero-mascot, .logo {
         max-width: 40%;
     }
 }
@@ -240,7 +264,7 @@ html, body {
         margin: 0 auto;
     }
     
-    .hero-mascot {
+    .hero-mascot, .logo {
         position: static;
         transform: none;
         max-width: 70%;
