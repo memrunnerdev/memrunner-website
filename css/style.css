@@ -99,11 +99,12 @@ html, body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    height: 100%;
 }
 
 .hero-content {
     position: absolute;
-    top: 45%;
+    top: 50%;
     left: 7%;
     transform: translateY(-50%);
     z-index: 2;
@@ -149,10 +150,10 @@ html, body {
 .logo {
     position: absolute;
     right: 10%;
-    top: 60%;
+    top: 50%;
     transform: translateY(-50%);
-    max-width: 30%;
-    max-height: 65vh;
+    max-width: 35%;
+    max-height: 75vh;
     object-fit: contain;
     filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.15));
     animation: float 3s ease-in-out infinite;
@@ -409,7 +410,7 @@ html, body {
         position: relative;
         width: 70%;
         max-height: 35vh;
-        margin: 1rem auto 0;
+        margin: 1rem auto 2rem;
         right: auto;
         top: auto;
         transform: none;
@@ -441,6 +442,7 @@ html, body {
         justify-content: center;
         width: 100%;
         gap: 0.8rem;
+        margin-bottom: 1rem;
     }
     
     .cta-button {
@@ -469,7 +471,7 @@ html, body {
         position: relative;
         max-width: 65%;
         max-height: 40vh;
-        margin: 1rem auto 2rem;
+        margin: 1rem auto 2.5rem;
         transform: none;
         top: auto;
     }
