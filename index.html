@@ -8,8 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="favicon-temp.png" type="image/png">
-    <!-- Preload the logo image to ensure consistent sizing -->
-    <link rel="preload" href="logo.png" as="image">
 </head>
 <body>
     <div class="main-container">
@@ -21,7 +19,7 @@
 
         <div class="content-area">
             <section id="hero" class="section hero active">
-                <img src="logo.png" alt="Rocket Rabbit Logo" class="logo">
+                <img src="./logo.png" alt="Rocket Rabbit Logo" class="logo" onload="console.log('Logo loaded successfully')" onerror="console.error('Failed to load logo:', this.src)">
                 <div class="hero-content">
                     <h1 class="hero-title">
                         <span>MEMPOOL</span>
